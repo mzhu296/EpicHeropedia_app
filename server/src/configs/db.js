@@ -1,11 +1,11 @@
 
 const mongoose = require("mongoose")
 require("dotenv").config()
-//const URL = process.env.MONGODB_URL
+const URL = `mongodb://localhost:27017/database`
 
 module.exports = () => {
     try {
-        return mongoose.connect('mongodb://localhost:27017/database')
+        return mongoose.connect(URL)
     }
     catch (err) {
         return { "Message": err.Message }
