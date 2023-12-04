@@ -1,6 +1,6 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import Home from "./components/Home";
-import Signup from "./components/Singup";
+import Signup from "./components/Register";
 import Login from "./components/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

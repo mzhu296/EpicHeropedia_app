@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <div className={styles.main_container}>
       <nav className={styles.navbar}>
-        <h1>ShanInfo</h1>
+        <h1>Homepage</h1>
         <button className={styles.white_btn} onClick={handleLogout}>
           Logout
         </button>
