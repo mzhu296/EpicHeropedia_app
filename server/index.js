@@ -1,37 +1,44 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const User = require('./User');
+require("dotenv").config()
 
-const app = express();
-app.use(express.json());
+const express = require('express')
+const app = express()
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const cors = require("cors")
 
-// Routes will go here
+const PORT = process.env.PORT || 5000
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const ConnectDB = require("./src/configs/db")
 
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+//importing the routes or controllers  UserController or UserRoutes and AuthController or AuthRoutes
+const UserRoutes = require("./src/controllers/user.controller")
+const AuthRoutes = require("./src/controllers/auth.controller")
 
-// Registration
-app.post('/register', async (req, res) => {
-    const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, password: hashedPassword });
-    await user.save();
-    res.status(201).send('User created');
-});
 
-// Login
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (!user || !await bcrypt.compare(password, user.password)) {
-        return res.status(401).send('Invalid credentials');
-    }
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-    res.json({ token });
-});
+//middlewares 
+app.use(express.json())
+app.use(cors())
+
+
+app.get("/", (req, resp) => {
+    resp.send("Hello Here, Home page")
+})
+
+app.get("/msg", (req, resp) => {
+    resp.send("Welcome to my Api")
+})
+
+
+//routes
+app.use("/api/users", UserRoutes)
+app.use("/api/auth", AuthRoutes)
+
+app.listen(PORT, () => {
+    ConnectDB()
+    console.log(`Connected on ${PORT}`)
+})
+
+
+
+
+
+
