@@ -5,7 +5,7 @@ require("dotenv").config()
 
 module.exports = () => {
     try {
-        return mongoose.connect("localhost:27017/databaseName")
+        return mongoose.connect('mongodb://localhost:27017/database')
     }
     catch (err) {
         return { "Message": err.Message }

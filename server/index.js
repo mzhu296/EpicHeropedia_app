@@ -20,7 +20,7 @@ app.use(cors())
 
 
 app.get("/", (req, resp) => {
-    resp.send("Hello Here, Home page")
+    resp.send("Hero webapp")
 })
 
 app.get("/msg", (req, resp) => {

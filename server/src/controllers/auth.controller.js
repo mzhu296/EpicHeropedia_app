@@ -1,13 +1,14 @@
 
-const express = require("express")
+// const express = require("express")
 
-const router = express.Router()
-
+// const router = express.Router()
+const router = require("express").Router();
 const { User } = require("../models/user.model")
 
 const { Joi } = require("joi")
 
 const bcrypt = require("bcrypt")
+require("dotenv").config()
 
 
 router.post("/", async (req, resp) => {

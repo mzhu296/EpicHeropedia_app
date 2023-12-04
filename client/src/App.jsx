@@ -2,7 +2,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import Home from "./components/Home";
 import Signup from "./components/Register";
 import Login from "./components/Login";
-import { ToastContainer } from "react-toastify";
+//import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Navigate replace to="/login" />} />
       </Routes>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 }
