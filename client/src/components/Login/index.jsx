@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
-//import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -15,12 +15,13 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      //const url = "https://api-reg-form.yousub.live/api/auth";
-      const url = `http://localhost:5000/api/auth`;
+      const url = "http://localhost:5000/api/auth";
       const { data: res } = await axios.post(url, data);
 
       localStorage.setItem("token", res.data);
-      alert(res.Message);
+      toast.success(res.Message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
       window.location = "/";
     } catch (error) {
       console.log("Error", error);
@@ -67,7 +68,7 @@ const Login = () => {
         </div>
         <div className={styles.right}>
           <h1>No Account?</h1>
-          <Link to="/signup">
+          <Link to="/register">
             <button type="button" className={styles.white_btn}>
               Register
             </button>

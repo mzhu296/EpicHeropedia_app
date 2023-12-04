@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "./styles.module.css";
 import { toast } from "react-toastify";
 
-const Signup = () => {
+const Register = () => {
   const [data, setData] = useState({
     first_Name: "",
     last_Name: "",
@@ -102,7 +102,7 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Register;
 
 // import { useState } from "react";
 // import { Link, useNavigate } from "react-router-dom";

@@ -1,9 +1,8 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import Home from "./components/Home";
-import Signup from "./components/Register";
+import Register from "./components/Register";
 import Login from "./components/Login";
 //import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const user = localStorage.getItem("token");
@@ -12,7 +11,7 @@ function App() {
     <>
       <Routes>
         {user && <Route path="/" element={<Home />} />}
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Navigate replace to="/login" />} />
       </Routes>

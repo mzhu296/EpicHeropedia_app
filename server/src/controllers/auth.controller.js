@@ -10,7 +10,6 @@ const { Joi } = require("joi")
 const bcrypt = require("bcrypt")
 require("dotenv").config()
 
-
 router.post("/", async (req, resp) => {
     try {
         //cheching the schema error
