@@ -51,7 +51,7 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use('/', require('./routes/authRoutes'));
 
-app.post('/superheroinfo', (req, res) => {
+app.post('/api/superheroinfo', (req, res) => {
     const { name, race, publisher, power } = req.body;
 
     let filteredSuperheroes = superheroInfo;
@@ -103,7 +103,33 @@ function isMatch(value, searchTerm) {
     return false;
 }
 
+let superheroLists = {};
 
+app.post('/api/superhero-lists', (req, res) => {
+    const { name, description = '', heroes, visibility = 'private' } = req.body;
+  
+    if (!name || !heroes) {
+      return res.status(400).send('Name and heroes are required.');
+    }
+  
+    if (superheroLists[name]) {
+      return res.status(409).send('A list with this name already exists.');
+    }
+  
+    superheroLists[name] = { description, heroes, visibility };
+    res.status(201).send(`List '${name}' created successfully.`);
+  });
+  
+  app.get('/api/superhero-lists/:name', (req, res) => {
+    const list = superheroLists[req.params.name];
+  
+    if (!list) {
+      return res.status(404).send('List not found.');
+    }
+  
+    res.json(list);
+  });
+  
 const port = 5000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`)

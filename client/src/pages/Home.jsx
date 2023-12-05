@@ -25,7 +25,7 @@ const Home = () => {
     setResults([]);
 
     try {
-      const response = await axios.post('/superheroinfo', searchParams);
+      const response = await axios.post('/api/superheroinfo', searchParams);
       setResults(response.data);
     } catch (error) {
       console.error('Error during search:', error);
