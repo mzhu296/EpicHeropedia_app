@@ -44,6 +44,23 @@ async function initializeAdminAccount() {
     }
 }
 
+async function getSuperheroInfoById(superheroIds) {
+    const superheroDetails = await Promise.all(superheroIds.map(async (id) => {
+      const superhero = superheroInfo.find(hero => hero.id.toString() === id.toString());
+      if (superhero) {
+        const powers = superheroPowers.find(power => power.hero_names.toLowerCase() === superhero.name.toLowerCase());
+        return {
+          info: superhero,
+          powers: powers ? Object.keys(powers).filter(power => powers[power] === 'True') : []
+        };
+      }
+      return null;
+    }));
+  
+    return superheroDetails.filter(Boolean);
+  }
+  
+
 //middleware
 app.use(express.json())
 app.use(cookieParser());
@@ -143,22 +160,6 @@ app.post('/api/superhero-lists', (req, res) => {
     res.json(listSummaries);
   });
   
-  async function getSuperheroInfoById(superheroIds) {
-    const superheroDetails = await Promise.all(superheroIds.map(async (id) => {
-      const superhero = superheroInfo.find(hero => hero.id.toString() === id.toString());
-      if (superhero) {
-        const powers = superheroPowers.find(power => power.hero_names.toLowerCase() === superhero.name.toLowerCase());
-        return {
-          info: superhero,
-          powers: powers ? Object.keys(powers).filter(power => powers[power] === 'True') : []
-        };
-      }
-      return null;
-    }));
-  
-    return superheroDetails.filter(Boolean);
-  }
-  
   app.get('/api/superhero-lists/:name', async (req, res) => {
     const list = superheroLists[req.params.name];
   
@@ -178,7 +179,72 @@ app.post('/api/superhero-lists', (req, res) => {
     }
   });
   
+  // Update an existing list
+app.put('/api/superhero-lists/:name', async (req, res) => {
+    const listName = req.params.name;
+    const { name, description, superheroId, visibility } = req.body;
   
+    if (!name || !superheroId) {
+      return res.status(400).send('Name and superheroId are required.');
+    }
+  
+    const existingList = superheroLists[listName];
+  
+    if (!existingList) {
+      return res.status(404).send('List not found.');
+    }
+  
+    superheroLists[listName] = { name, description, superheroId, visibility };
+    res.status(200).send(`List '${name}' updated successfully.`);
+  });  
+  
+  
+  app.delete('/api/superhero-lists/:name', (req, res) => {
+    const listName = req.params.name;
+  
+    if (!superheroLists[listName]) {
+      return res.status(404).send('List not found.');
+    }
+  
+    // Delete the list
+    delete superheroLists[listName];
+  
+    res.status(200).send(`List '${listName}' deleted successfully.`);
+  });  
+
+  app.post('/api/superhero-lists/:name/reviews', (req, res) => {
+    const listName = req.params.name;
+    const { rating, comment } = req.body;
+  
+    if (!superheroLists[listName]) {
+      return res.status(404).send('List not found.');
+    }
+  
+    if (superheroLists[listName].visibility !== 'public') {
+      return res.status(403).send('You can only review public lists.');
+    }
+  
+    if (typeof rating !== 'number' || rating < 1 || rating > 5) {
+      return res.status(400).send('Rating must be a number between 1 and 5.');
+    }
+  
+    const review = {
+      rating,
+      comment: comment || '', // Make the comment optional
+      timestamp: new Date(),
+    };
+  
+    // Add the review to the list
+    if (!superheroLists[listName].reviews) {
+      superheroLists[listName].reviews = [];
+    }
+    superheroLists[listName].reviews.push(review);
+  
+    res.status(201).send('Review added successfully.');
+  });
+  
+  
+
 const port = 5000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`)
