@@ -51,4 +51,15 @@
       margin-bottom: 1px;
       line-height: 2.5rem;
     }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .form-container textarea {
+      margin-top: 16px;
+    }
+    
 }

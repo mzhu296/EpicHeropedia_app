@@ -92,43 +92,92 @@ function isMatch(value, searchTerm) {
     const lowerCaseValue = value.toLowerCase();
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
+    // Improved loop condition for efficiency
     for (let i = 0; i <= lowerCaseValue.length - lowerCaseSearchTerm.length; i++) {
-        const substring = lowerCaseValue.substr(i, lowerCaseSearchTerm.length);
-        const distance = [...substring].filter((char, index) => char !== lowerCaseSearchTerm[index]).length;
+        let distance = 0;
 
+        // Iterate over the characters of the searchTerm
+        for (let j = 0; j < lowerCaseSearchTerm.length; j++) {
+            // Increment distance if characters do not match
+            if (lowerCaseValue[i + j] !== lowerCaseSearchTerm[j]) {
+                distance++;
+            }
+
+            // Break early if distance exceeds 2
+            if (distance > 2) {
+                break;
+            }
+        }
+
+        // Return true if a match is found within the allowed distance
         if (distance <= 2) {
             return true;
         }
     }
+    // Return false if no match is found
     return false;
 }
 
-let superheroLists = {};
+let superheroLists = {};//list that store superhero data
 
 app.post('/api/superhero-lists', (req, res) => {
-    const { name, description = '', heroes, visibility = 'private' } = req.body;
+    const { name, description = '', superheroId, visibility = 'private' } = req.body;
   
-    if (!name || !heroes) {
-      return res.status(400).send('Name and heroes are required.');
+    if (!name || !superheroId) {
+      return res.status(400).send('Name and superheroId are required.');
     }
   
     if (superheroLists[name]) {
       return res.status(409).send('A list with this name already exists.');
     }
   
-    superheroLists[name] = { description, heroes, visibility };
+    superheroLists[name] = { name, description, superheroId, visibility };
     res.status(201).send(`List '${name}' created successfully.`);
   });
+
+  app.get('/api/superhero-lists', (req, res) => {
+    const listSummaries = Object.keys(superheroLists).map(key => ({
+      name: superheroLists[key].name,
+      visibility: superheroLists[key].visibility
+    }));
+    res.json(listSummaries);
+  });
   
-  app.get('/api/superhero-lists/:name', (req, res) => {
+  async function getSuperheroInfoById(superheroIds) {
+    const superheroDetails = await Promise.all(superheroIds.map(async (id) => {
+      const superhero = superheroInfo.find(hero => hero.id.toString() === id.toString());
+      if (superhero) {
+        const powers = superheroPowers.find(power => power.hero_names.toLowerCase() === superhero.name.toLowerCase());
+        return {
+          info: superhero,
+          powers: powers ? Object.keys(powers).filter(power => powers[power] === 'True') : []
+        };
+      }
+      return null;
+    }));
+  
+    return superheroDetails.filter(Boolean);
+  }
+  
+  app.get('/api/superhero-lists/:name', async (req, res) => {
     const list = superheroLists[req.params.name];
   
     if (!list) {
       return res.status(404).send('List not found.');
     }
   
-    res.json(list);
+    // Split the list of hero IDs and trim whitespace
+    const superheroIds = list.superheroId.split(',').map(id => id.trim());
+  
+    try {
+      const superheroDetails = await getSuperheroInfoById(superheroIds);
+      res.json({ ...list, heroes: superheroDetails });
+    } catch (error) {
+      console.error('Error fetching superhero details:', error);
+      res.status(500).send('Internal Server Error');
+    }
   });
+  
   
 const port = 5000;
 app.listen(port, () => {
