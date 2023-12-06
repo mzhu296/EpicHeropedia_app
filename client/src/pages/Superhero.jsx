@@ -237,6 +237,9 @@ const handleSelectList = async (listName) => {
   
   return (
     <div className="superhero-container">
+        <div>
+      <h1>Welcome to the Superhero Page</h1>
+      </div>
       <div className="form-container">
         <form onSubmit={handleSubmit}>
           <div className="input-group">
@@ -254,18 +257,18 @@ const handleSelectList = async (listName) => {
               placeholder="SuperheroId (comma-separated)"
               required
             />
-            <select name="visibility" value={listDetails.visibility} onChange={handleChange}>
-              <option value="private">Private</option>
-              <option value="public">Public</option>
-            </select>
-          </div>
-          <input
+            <input
             name="description"
             value={listDetails.description}
             onChange={handleChange}
             placeholder="Description"
-          />
-          <button type="submit">Create List</button>
+            />
+            <select name="visibility" value={listDetails.visibility} onChange={handleChange}>
+              <option value="private">Private</option>
+              <option value="public">Public</option>
+            </select>
+            <button type="submit">Create List</button>
+          </div>
         </form>
       </div>
 

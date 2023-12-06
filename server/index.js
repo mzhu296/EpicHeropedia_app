@@ -27,17 +27,19 @@ app.use(
 
 async function initializeAdminAccount() {
     try {
-        const adminExists = await UserModel.findOne({ email: process.env.ADMIN_EMAIL });
+        const adminEmail = 'admin@gmail.com';
+        const adminExists = await UserModel.findOne({ email: adminEmail });
         if (!adminExists) {
             const hashedPassword = await hashPassword(process.env.ADMIN_PASSWORD);
             const adminUser = new UserModel({
                 name: process.env.ADMIN_NAME,
-                email: process.env.ADMIN_EMAIL,
-                password: hashedPassword, // use the hashed password here
+                email: adminEmail,
+                password: hashedPassword,
+                role: 'admin' // Set the role to admin
             });
 
             await adminUser.save();
-            console.log('Admin account created'); 
+            console.log('Admin account created');
         }
     } catch (err) {
         console.error('Error creating admin account:', err);
@@ -144,11 +146,17 @@ app.post('/api/superhero-lists', (req, res) => {
       return res.status(400).send('Name and superheroId are required.');
     }
   
-    if (superheroLists[name]) {
+    if (superheroLists.some((list) => list.name === name)) {
       return res.status(409).send('A list with this name already exists.');
     }
   
-    superheroLists[name] = { name, description, superheroId, visibility };
+    if (superheroLists.length >= 20) {
+      return res.status(400).send('You have reached the maximum limit of lists (20).');
+    }
+  
+    const newList = { name, description, superheroId, visibility };
+    superheroLists.push(newList);
+  
     res.status(201).send(`List '${name}' created successfully.`);
   });
 

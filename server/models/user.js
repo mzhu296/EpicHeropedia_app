@@ -6,7 +6,16 @@ const userSchema = new mongoose.Schema({
         type : String,
         unique: true
     },
-    password: String
+    password: String,
+    role: {
+        type: String,
+        enum: ['user', 'siteManager', 'admin'],
+        default: 'user'
+    },
+    isDisabled: {
+        type: Boolean,
+        default: false
+    }
 })
 
 const UserModel = mongoose.model('User' , userSchema);
