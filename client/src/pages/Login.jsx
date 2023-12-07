@@ -27,7 +27,6 @@ const Login = () => {
             } else {
                 navigate('/superhero'); // Redirect to general user page
             }
-
             setData({});
         }
     } catch (error) {

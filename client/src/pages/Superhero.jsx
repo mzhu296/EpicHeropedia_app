@@ -39,16 +39,23 @@ const Superhero = () => {
     }
   };
 
-  const [showRatingAndReviews, setShowRatingAndReviews] = useState(false);
+  // const [showRatingAndReviews, setShowRatingAndReviews] = useState(false);
 
-  const toggleRatingAndReviews = () => {
-    setShowRatingAndReviews(false);
-  };  
+  // const toggleRatingAndReviews = () => {
+  //   setShowRatingAndReviews(false);
+  // };  
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const creatorName = localStorage.getItem('userName');
+    const timestamp = new Date().toISOString();
+    const newListDetails = {
+      ...listDetails,
+      creator: creatorName,
+      createdAt: timestamp,
+    };
     try {
-      await axios.post('/api/superhero-lists', listDetails);
+      await axios.post('/api/superhero-lists',  newListDetails);
       alert('List created successfully');
       await fetchLists();
     } catch (error) {
@@ -57,17 +64,26 @@ const Superhero = () => {
     }
   };
 
-const handleSelectList = async (listName) => {
+  const handleSelectList = async (listName) => {
     try {
-      const response = await axios.get(`/api/superhero-lists/${listName}`);
-      setSelectedList(response.data);
-      // Fetch reviews for the selected list
-      const reviewsResponse = await axios.get(`/api/superhero-lists/${listName}/reviews`);
-      setSelectedList({ ...selectedList, reviews: reviewsResponse.data });
+      // Check if the current list is already selected
+      if (selectedList && selectedList.name === listName) {
+        // If selected, unselect it
+        setSelectedList(null);
+      } else {
+        // If not selected, fetch the list details
+        const response = await axios.get(`/api/superhero-lists/${listName}`);
+        setSelectedList(response.data);
+        
+        // Fetch reviews for the selected list
+        // const reviewsResponse = await axios.get(`/api/superhero-lists/${listName}/reviews`);
+        // setSelectedList({ ...response.data, reviews: reviewsResponse.data });
+      }
     } catch (error) {
-      console.error('Error fetching list details:', error);
+      console.error('Error fetching or unselecting list details:', error);
     }
-  };  
+  };
+   
 
   const handleEditList = (listName) => {
     const selectedList = lists.find((list) => list.name === listName);
@@ -77,18 +93,25 @@ const handleSelectList = async (listName) => {
         description: selectedList.description,
         superheroId: selectedList.superheroId,
         visibility: selectedList.visibility,
+        creator: selectedList.creator, // Add this line
+        createdAt: selectedList.createdAt, // Add this line
       });
     }
   };
-
+  
   const handleEditChange = (e) => {
     setEditListDetails({ ...editListDetails, [e.target.name]: e.target.value });
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    const timestamp = new Date().toISOString();
+    const updatedListDetails = {
+      ...editListDetails,
+      createdAt: timestamp,
+    };
     try {
-      await axios.put(`/api/superhero-lists/${editListDetails.name}`, editListDetails);
+      await axios.put(`/api/superhero-lists/${editListDetails.name}`, updatedListDetails);
       alert(`List '${editListDetails.name}' updated successfully`);
       await fetchLists();
       setEditListDetails({
@@ -139,9 +162,9 @@ const handleSelectList = async (listName) => {
         {list.name}
         <button onClick={() => handleEditList(list.name)}>Edit</button>
         <button onClick={() => handleDeleteList(list.name)}>Delete</button>
-        <button onClick={toggleRatingAndReviews}>
+        {/* <button onClick={toggleRatingAndReviews}>
         {showRatingAndReviews ? 'Hide Rating and Reviews' : 'Show Rating and Reviews'}
-        </button>
+        </button> */}
         {list.name === editListDetails.name && (
           <div className="edit-list-form">
             <h3>Edit List</h3>

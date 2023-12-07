@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import List from './pages/List';
 import Superhero from './pages/Superhero';
 import Admin from './pages/Admin';
 import axios from 'axios';
@@ -23,8 +24,10 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/list" element={<List />} />
           <Route path="/superhero" element={<Superhero />} />
           <Route path="/admin" element={<Admin />} />
+          
         </Routes>
       </div>
     </>
