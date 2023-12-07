@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const cors = require('cors');
@@ -7,7 +8,7 @@ const { test, registerUser, loginUser } = require('../JWT/jwtUtils')
 router.use(
     cors({
         credentials: true,
-        origin: 'http://localhost:3000'
+        origin: process.env.REACT_APP_ORIGIN,
     })
 )
 

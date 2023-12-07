@@ -11,7 +11,7 @@ import Admin from './pages/Admin';
 import axios from 'axios';
 import {Toaster} from 'react-hot-toast'
 
-axios.defaults.baseURL = 'http://localhost:5000';
+axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 axios.defaults.withCredentials = true;
 
 const App = () => {

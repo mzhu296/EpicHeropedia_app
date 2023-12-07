@@ -62,12 +62,19 @@ const List = () => {
 
   const expandList = async (listName) => {
     try {
-      const response = await axios.get(`/api/superhero-lists/${listName}`);
-      setExpandedList(response.data);
+      // If the list is already expanded, unexpand it
+      if (expandedList && expandedList.name === listName) {
+        setExpandedList(null);
+      } else {
+        // If not expanded, fetch and expand the list
+        const response = await axios.get(`/api/superhero-lists/${listName}`);
+        setExpandedList(response.data);
+      }
     } catch (error) {
-      console.error('Error fetching expanded list details:', error);
+      console.error('Error fetching or unexpanding list details:', error);
     }
   };
+  
 
   const renderPublicLists = () => {
     return publicLists.map((list, index) => (
@@ -81,7 +88,9 @@ const List = () => {
             <ul>
               {expandedList.heroes.map((hero, index) => (
                 <li key={index}>
-                  Name: {hero.info.name} - Power: {hero.info.power} - Publisher: {hero.info.Publisher}
+                  Name: {hero.info.name}  - Publisher: {hero.info.Publisher} - Race : {hero.info.Race} 
+                  <br></br>Power: {hero.powers.map((power, index) => (
+              <li key={index}>{power}</li>))} <br></br>
                 </li>
               ))}
             </ul>

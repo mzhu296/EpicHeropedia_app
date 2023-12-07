@@ -20,7 +20,7 @@ mongoose.connect(`mongodb://localhost:27017/database`)
     })
 app.use(
     cors({
-        origin: 'http://localhost:3000',
+        origin: process.env.REACT_APP_ORIGIN,
         credentials: true
     })
 );
@@ -61,7 +61,6 @@ async function getSuperheroInfoById(superheroIds) {
   
     return superheroDetails.filter(Boolean);
   }
-  
 
 //middleware
 app.use(express.json())
@@ -175,7 +174,6 @@ app.post('/api/superhero-lists', (req, res) => {
     const superheroIds = list.superheroId.split(',').map(id => id.trim());
     try {
       const superheroDetails = await getSuperheroInfoById(superheroIds);
-
       res.json({ ...list, heroes: superheroDetails });
     } catch (error) {
       console.error('Error fetching superhero details:', error);
