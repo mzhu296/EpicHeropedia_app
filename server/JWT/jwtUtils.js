@@ -49,36 +49,45 @@ const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        //check if user exists
+        // Check if user exists
         const user = await User.findOne({ email });
         if (!user) {
             return res.json({
                 error: 'No User Found :('
-            })
+            });
         }
 
-        //check if password matches
+        // Check if the user is disabled
+        if (user.isDisabled) {
+            return res.json({
+                error: "Your account is disabled. Please contact the administrator."
+            });
+        }
+
+        // Check if password matches
         const match = await comparePassword(password, user.password);
-        if (match) {
-            jwt.sign({
-                email: user.email,
-                id: user._id,
-                name: user.name
-            }, 
-                process.env.JWT_SECRET,
-                {},
-                (err, token) => {
-                    if (err) throw err;
-                    res.cookie('token', token).json(user)
-                })
-        }
         if (!match) {
-            res.json({
+            return res.json({
                 error: "Password doesn't match :("
-            })
+            });
         }
+
+        // Generate JWT token
+        jwt.sign({
+            email: user.email,
+            name: user.name,
+            role: user.role 
+        }, 
+        process.env.JWT_SECRET,
+        {},
+        (err, token) => {
+            if (err) throw err;
+            res.cookie('token', token).json(user)
+        });
+        
     } catch (error) {
         console.log(error);
+        res.status(500).json({ error: "An internal server error occurred." });
     }
 }
 

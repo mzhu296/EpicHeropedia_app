@@ -15,19 +15,26 @@ const Login = () => {
     e.preventDefault();
     const { email, password } = data;
     try {
-      const { data } = await axios.post('/login', {
-        email, password
-      });
-      if (data.error) {
-        toast.error(data.error)
-      } else {
-        setData({});
-        navigate('/superhero')
-      }
+        const response = await axios.post('/login', { email, password });
+        if (response.data.error) {
+            toast.error(response.data.error);
+        } else {
+            toast.success(`Welcome, ${response.data.name}!`);
+            localStorage.setItem('userName', response.data.name);
+            // Navigate based on role
+            if (response.data.role === 'admin') {
+                navigate('/admin'); // Redirect to admin page
+            } else {
+                navigate('/superhero'); // Redirect to general user page
+            }
+
+            setData({});
+        }
     } catch (error) {
-      console.log(error);
+        console.error(error);
+        toast.error('An error occurred while logging in');
     }
-  }
+};
 
   return (
     <div className="login-container">

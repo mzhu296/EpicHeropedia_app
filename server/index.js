@@ -146,7 +146,7 @@ app.post('/api/superhero-lists', (req, res) => {
       return res.status(400).send('Name and superheroId are required.');
     }
   
-    if (superheroLists.some((list) => list.name === name)) {
+    if (superheroLists[name]) {
       return res.status(409).send('A list with this name already exists.');
     }
   
@@ -154,8 +154,7 @@ app.post('/api/superhero-lists', (req, res) => {
       return res.status(400).send('You have reached the maximum limit of lists (20).');
     }
   
-    const newList = { name, description, superheroId, visibility };
-    superheroLists.push(newList);
+    superheroLists[name] = { name, description, superheroId, visibility };
   
     res.status(201).send(`List '${name}' created successfully.`);
   });

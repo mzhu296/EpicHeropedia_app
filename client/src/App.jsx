@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Superhero from './pages/Superhero';
+import Admin from './pages/Admin';
 import axios from 'axios';
 import {Toaster} from 'react-hot-toast'
 
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/superhero" element={<Superhero />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
     </>
