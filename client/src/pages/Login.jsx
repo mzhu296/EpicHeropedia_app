@@ -21,7 +21,6 @@ const Login = () => {
         } else {
             toast.success(`Welcome, ${response.data.name}!`);
             localStorage.setItem('userName', response.data.name);
-            // Navigate based on role
             if (response.data.role === 'admin') {
                 navigate('/admin'); // Redirect to admin page
             } else {

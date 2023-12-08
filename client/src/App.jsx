@@ -27,7 +27,6 @@ const App = () => {
           <Route path="/list" element={<List />} />
           <Route path="/superhero" element={<Superhero />} />
           <Route path="/admin" element={<Admin />} />
-          
         </Routes>
       </div>
     </>

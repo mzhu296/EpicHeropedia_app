@@ -2,9 +2,9 @@ const User = require("../models/user");
 const { hashPassword, comparePassword } = require('../hash/auth');
 const jwt = require('jsonwebtoken');
 
-const test = (req, res) => {
-    res.json("TEST IS WORKING...")
-}
+// const test = (req, res) => {
+//     res.json("TEST IS WORKING...")
+// }
 
 
 //function to register a user
@@ -91,8 +91,11 @@ const loginUser = async (req, res) => {
     }
 }
 
+
+
 module.exports = {
-    test,
+
+    // test,
     registerUser,
     loginUser
 }

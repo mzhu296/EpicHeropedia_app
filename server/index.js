@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser')
 const app = express();
 
 //database connection
-mongoose.connect(`mongodb://localhost:27017/database`)
+mongoose.connect(process.env.MONGO_URL)
     .then(() => {
         console.log("Database Connected :)");
         initializeAdminAccount(); 
